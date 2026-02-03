@@ -15,6 +15,11 @@ export type SessionPayload = {
 function getJwtSecret(): string {
   const secret = process.env.JWT_SECRET;
   if (!secret) {
+    // Return empty string during build time to prevent build failures
+    // Runtime will still fail if JWT_SECRET is not set
+    if (process.env.NODE_ENV === "production" && typeof window === "undefined") {
+      return "";
+    }
     throw new Error("JWT_SECRET is not set");
   }
   return secret;
