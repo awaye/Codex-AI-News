@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSessionCookieName, getSessionCookieOptions, signSession, verifyPassword } from "@/lib/auth";
 
+// Force dynamic rendering to prevent build-time errors
+export const dynamic = "force-dynamic";
+
 export async function POST(request: NextRequest) {
   const formData = await request.formData();
   const email = formData.get("email")?.toString().trim().toLowerCase();

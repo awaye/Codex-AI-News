@@ -3,6 +3,9 @@ import { prisma } from "@/lib/prisma";
 import { getAdminFromRequest, getSessionCookieName } from "@/lib/auth";
 import { parseTags, normalizeText } from "@/lib/utils";
 
+// Force dynamic rendering to prevent build-time errors
+export const dynamic = "force-dynamic";
+
 async function requireAdmin(request: NextRequest) {
   const token = request.cookies.get(getSessionCookieName())?.value;
   const admin = await getAdminFromRequest(token);

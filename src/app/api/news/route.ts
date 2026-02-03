@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+// Force dynamic rendering to prevent build-time errors
+export const dynamic = "force-dynamic";
+
 export async function GET(request: NextRequest) {
   const scopeParam = request.nextUrl.searchParams.get("scope");
   const scope = scopeParam === "GLOBAL" ? "GLOBAL" : scopeParam === "AFRICA" ? "AFRICA" : null;

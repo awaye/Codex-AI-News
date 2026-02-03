@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAdminFromRequest, getSessionCookieName } from "@/lib/auth";
 
+// Force dynamic rendering to prevent build-time errors
+export const dynamic = "force-dynamic";
+
 export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
   const token = request.cookies.get(getSessionCookieName())?.value;
   const admin = await getAdminFromRequest(token);

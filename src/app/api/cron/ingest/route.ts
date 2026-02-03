@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { ingestAllSources } from "@/lib/ingest";
 
 export const runtime = "nodejs";
+// Force dynamic rendering to prevent build-time errors
+export const dynamic = "force-dynamic";
 
 function authorized(request: NextRequest) {
   const secret = process.env.CRON_SECRET;
