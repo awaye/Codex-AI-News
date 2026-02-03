@@ -1,6 +1,9 @@
 import { requireAdmin } from "@/lib/auth";
 import AdminNav from "@/components/admin-nav";
 
+// Force dynamic rendering to prevent build-time errors
+export const dynamic = "force-dynamic";
+
 export default async function AdminLayout({
   children
 }: {
