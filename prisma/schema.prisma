@@ -16,10 +16,24 @@ enum SourceScope {
   GLOBAL
 }
 
+enum SourceType {
+  RSS
+  GOOGLE_NEWS
+}
+
 enum NewsStatus {
   PENDING
   APPROVED
   REJECTED
+}
+
+enum Category {
+  AI_EDUCATION
+  HACKATHON
+  NATIONAL
+  HEALTH
+  AGRICULTURE
+  OPPORTUNITIES
 }
 
 enum IngestionStatus {
@@ -39,6 +53,8 @@ model Source {
   id            String          @id @default(cuid())
   name          String
   feedUrl       String          @unique
+  type          SourceType      @default(RSS)
+  query         String?
   scope         SourceScope
   active        Boolean         @default(true)
   tags          String[]        @default([])
@@ -55,6 +71,7 @@ model NewsItem {
   url         String      @unique
   publishedAt DateTime
   tags        String[]    @default([])
+  categories  Category[] @default([])
   country     String?
   scope       SourceScope
   status      NewsStatus  @default(PENDING)
@@ -66,6 +83,7 @@ model NewsItem {
   @@index([status, scope])
   @@index([publishedAt])
   @@index([title, publishedAt])
+  @@index([categories], type: Gin)
 }
 
 model IngestionLog {

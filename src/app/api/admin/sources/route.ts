@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAdminFromRequest, getSessionCookieName } from "@/lib/auth";
 import { parseTags, normalizeText } from "@/lib/utils";
+import { buildGoogleNewsQuery, buildGoogleNewsUrl } from "@/lib/google-news";
 
 // Force dynamic rendering to prevent build-time errors
 export const dynamic = "force-dynamic";
@@ -29,12 +30,17 @@ export async function POST(request: NextRequest) {
 
   const formData = await request.formData();
   const name = normalizeText(formData.get("name")?.toString());
-  const feedUrl = normalizeText(formData.get("feedUrl")?.toString());
+  const type = formData.get("type")?.toString() === "GOOGLE_NEWS" ? "GOOGLE_NEWS" : "RSS";
+  const query = normalizeText(formData.get("query")?.toString());
+  const feedUrl =
+    type === "GOOGLE_NEWS"
+      ? buildGoogleNewsUrl(buildGoogleNewsQuery(query))
+      : normalizeText(formData.get("feedUrl")?.toString());
   const scope = formData.get("scope")?.toString() === "GLOBAL" ? "GLOBAL" : "AFRICA";
   const tags = parseTags(formData.get("tags")?.toString());
   const active = formData.get("active") === "on";
 
-  if (!name || !feedUrl) {
+  if (!name || (type === "RSS" && !feedUrl) || (type === "GOOGLE_NEWS" && !query)) {
     return NextResponse.redirect(new URL("/admin/sources", request.url));
   }
 
@@ -42,6 +48,8 @@ export async function POST(request: NextRequest) {
     data: {
       name,
       feedUrl,
+      type,
+      query: type === "GOOGLE_NEWS" ? query : null,
       scope,
       tags,
       active

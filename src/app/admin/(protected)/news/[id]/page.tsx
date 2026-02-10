@@ -2,6 +2,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { formatTags } from "@/lib/utils";
 import ApproveRejectButtons from "@/components/approve-reject";
+import { CATEGORY_OPTIONS } from "@/lib/category-rules";
 
 export const dynamic = "force-dynamic";
 
@@ -18,6 +19,10 @@ export default async function NewsEdit({ params }: { params: { id: string } }) {
       </div>
     );
   }
+
+  const itemCategories = Array.isArray((item as any).categories)
+    ? ((item as any).categories as string[])
+    : [];
 
   return (
     <section className="rounded-3xl border border-black/10 bg-white/80 p-8 shadow-soft">
@@ -46,6 +51,25 @@ export default async function NewsEdit({ params }: { params: { id: string } }) {
         </div>
 
         <form className="flex flex-col gap-4" action={`/api/admin/news/${item.id}`} method="post">
+          <div className="flex flex-col gap-2 text-sm">
+            <span className="text-sm font-medium">Categories</span>
+            <div className="flex flex-wrap gap-2">
+              {CATEGORY_OPTIONS.map((option) => (
+                <label
+                  key={option.value}
+                  className="flex items-center gap-2 rounded-full border border-black/10 px-3 py-1 text-xs"
+                >
+                  <input
+                    type="checkbox"
+                    name="categories"
+                    value={option.value}
+                    defaultChecked={itemCategories.includes(option.value)}
+                  />
+                  <span className="text-black/70">{option.label}</span>
+                </label>
+              ))}
+            </div>
+          </div>
           <label className="flex flex-col gap-2 text-sm">
             Summary
             <textarea
