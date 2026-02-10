@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAdminFromRequest, getSessionCookieName } from "@/lib/auth";
 import { parseTags, normalizeText } from "@/lib/utils";
+import { parseCategories, parseCategoriesList } from "@/lib/category-rules";
 
 async function requireAdmin(request: NextRequest) {
   const token = request.cookies.get(getSessionCookieName())?.value;
@@ -21,6 +22,12 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
   const body = await request.json();
   const summary = typeof body.summary === "string" ? normalizeText(body.summary) : undefined;
   const tags = typeof body.tags === "string" ? parseTags(body.tags) : Array.isArray(body.tags) ? body.tags : undefined;
+  const categories =
+    typeof body.categories === "string"
+      ? parseCategories(body.categories)
+      : Array.isArray(body.categories)
+        ? parseCategoriesList(body.categories)
+        : undefined;
   const country = typeof body.country === "string" ? normalizeText(body.country) : undefined;
   const scope = body.scope === "AFRICA" || body.scope === "GLOBAL" ? body.scope : undefined;
 
@@ -29,6 +36,7 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
     data: {
       ...(summary !== undefined ? { summary: summary || null } : {}),
       ...(tags !== undefined ? { tags } : {}),
+      ...(categories !== undefined ? { categories } : {}),
       ...(country !== undefined ? { country: country || null } : {}),
       ...(scope ? { scope } : {})
     }
@@ -46,6 +54,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
   const formData = await request.formData();
   const summary = normalizeText(formData.get("summary")?.toString());
   const tags = parseTags(formData.get("tags")?.toString());
+  const categories = parseCategoriesList(formData.getAll("categories"));
   const country = normalizeText(formData.get("country")?.toString());
   const scope = formData.get("scope")?.toString();
 
@@ -54,6 +63,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
     data: {
       summary: summary || null,
       tags,
+      categories,
       country: country || null,
       scope: scope === "GLOBAL" ? "GLOBAL" : "AFRICA"
     }

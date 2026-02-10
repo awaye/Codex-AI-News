@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import ApproveRejectButtons from "@/components/approve-reject";
 import { formatTags } from "@/lib/utils";
+import { formatCategoryLabel } from "@/lib/category-rules";
 
 type Props = {
   id: string;
@@ -14,7 +15,10 @@ type Props = {
   publishedLabel: string;
   sourceName: string;
   tags: string[];
+  categories: string[];
   country?: string | null;
+  selected?: boolean;
+  onSelect?: (checked: boolean) => void;
 };
 
 export default function NewsQueueItem({
@@ -26,7 +30,10 @@ export default function NewsQueueItem({
   publishedLabel,
   sourceName,
   tags,
-  country
+  categories,
+  country,
+  selected = false,
+  onSelect
 }: Props) {
   const [animation, setAnimation] = useState<"approve" | "reject" | null>(null);
   const [collapsed, setCollapsed] = useState(false);
@@ -52,39 +59,50 @@ export default function NewsQueueItem({
               : ""
         }`}
       />
-      <div className="flex flex-col gap-3">
-        <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-[0.18em] text-black/50">
-          <span>{sourceName}</span>
-          <span>•</span>
-          <span>{scope}</span>
-          <span>•</span>
-          <span>{publishedLabel}</span>
-        </div>
-        <h2 className="text-xl font-semibold text-ink">{title}</h2>
-        {summary ? <p className="text-sm text-black/70">{summary}</p> : null}
-        <div className="flex flex-wrap items-center gap-2 text-xs text-black/60">
-          {country ? <span>Country: {country}</span> : null}
-          {tags.length > 0 ? <span>Tags: {formatTags(tags)}</span> : null}
-        </div>
-        <div className="flex flex-wrap items-center gap-3 text-sm">
-          <a
-            className="rounded-full border border-black/10 px-4 py-2 text-sm text-black/70 hover:border-black/30"
-            href={url}
-            target="_blank"
-            rel="noreferrer"
-          >
-            View source
-          </a>
-          <Link className="rounded-full border border-black/10 px-4 py-2" href={`/admin/news/${id}`}>
-            Edit
-          </Link>
-          <ApproveRejectButtons
-            id={id}
-            onAction={(action) => {
-              setAnimation(action);
-              setTimeout(() => setCollapsed(true), 240);
-            }}
-          />
+      <div className="flex items-start gap-3">
+        <input
+          type="checkbox"
+          checked={selected}
+          onChange={(event) => onSelect?.(event.target.checked)}
+          className="mt-1 h-4 w-4 accent-ink"
+        />
+        <div className="flex flex-col gap-3">
+          <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-[0.18em] text-black/50">
+            <span>{sourceName}</span>
+            <span>•</span>
+            <span>{scope}</span>
+            <span>•</span>
+            <span>{publishedLabel}</span>
+          </div>
+          <h2 className="text-xl font-semibold text-ink">{title}</h2>
+          {summary ? <p className="text-sm text-black/70">{summary}</p> : null}
+          <div className="flex flex-wrap items-center gap-2 text-xs text-black/60">
+            {country ? <span>Country: {country}</span> : null}
+            {tags.length > 0 ? <span>Tags: {formatTags(tags)}</span> : null}
+            {categories.length > 0 ? (
+              <span>Categories: {categories.map((value) => formatCategoryLabel(value)).join(", ")}</span>
+            ) : null}
+          </div>
+          <div className="flex flex-wrap items-center gap-3 text-sm">
+            <a
+              className="rounded-full border border-black/10 px-4 py-2 text-sm text-black/70 hover:border-black/30"
+              href={url}
+              target="_blank"
+              rel="noreferrer"
+            >
+              View source
+            </a>
+            <Link className="rounded-full border border-black/10 px-4 py-2" href={`/admin/news/${id}`}>
+              Edit
+            </Link>
+            <ApproveRejectButtons
+              id={id}
+              onAction={(action) => {
+                setAnimation(action);
+                setTimeout(() => setCollapsed(true), 240);
+              }}
+            />
+          </div>
         </div>
       </div>
     </article>

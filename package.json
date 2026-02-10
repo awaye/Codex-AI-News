@@ -9,7 +9,8 @@
     "lint": "next lint",
     "prisma:generate": "prisma generate",
     "db:push": "prisma db push",
-    "db:seed": "prisma db seed"
+    "db:seed": "prisma db seed",
+    "cleanup:old-pending": "tsx scripts/cleanup-old-pending.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

@@ -2,6 +2,8 @@ import Parser from "rss-parser";
 import { prisma } from "@/lib/prisma";
 import { normalizeText, parseTags, stripHtml, truncateText } from "@/lib/utils";
 import { buildAiText, isAiRelated, isAfricaRelated } from "@/lib/ai-filter";
+import { classifyCategories } from "@/lib/category-rules";
+import { buildGoogleNewsQuery, buildGoogleNewsUrl } from "@/lib/google-news";
 
 const parser = new Parser({
   timeout: 15000
@@ -28,13 +30,26 @@ export async function ingestSource(sourceId: string) {
     return { itemsFound: 0, itemsInserted: 0 };
   }
 
+  if (source.type === "GOOGLE_NEWS" && !source.query?.trim()) {
+    return { itemsFound: 0, itemsInserted: 0 };
+  }
+
+  const feedUrl =
+    source.type === "GOOGLE_NEWS"
+      ? buildGoogleNewsUrl(buildGoogleNewsQuery(source.query ?? ""))
+      : source.feedUrl;
+
+  if (!feedUrl) {
+    return { itemsFound: 0, itemsInserted: 0 };
+  }
+
   const logBase = {
     sourceId: source.id,
     ranAt: new Date()
   };
 
   try {
-    const feed = await parser.parseURL(source.feedUrl);
+    const feed = await parser.parseURL(feedUrl);
     const items = feed.items ?? [];
 
     let inserted = 0;
@@ -52,6 +67,8 @@ export async function ingestSource(sourceId: string) {
       const categories = Array.isArray(item.categories) ? item.categories : [];
       const tags = mergeTags(source.tags ?? [], categories);
       const aiText = buildAiText([title, summary, categories.join(" ")]);
+      const categoryText = buildAiText([title, summary, tags.join(" "), categories.join(" ")]);
+      const classifiedCategories = classifyCategories(categoryText);
 
       if (!isAiRelated(aiText)) {
         continue;
@@ -83,6 +100,7 @@ export async function ingestSource(sourceId: string) {
           url,
           publishedAt,
           tags,
+          categories: classifiedCategories,
           scope: source.scope,
           status: "PENDING",
           sourceId: source.id
