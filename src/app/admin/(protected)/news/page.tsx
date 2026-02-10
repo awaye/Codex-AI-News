@@ -34,7 +34,7 @@ export default async function NewsPage({
 
   const sources = await prisma.source.findMany({ orderBy: { name: "asc" } });
   const lastLog = await prisma.ingestionLog.findFirst({ orderBy: { ranAt: "desc" } });
-  const items = await prisma.newsItem.findMany({
+  const items = (await (prisma.newsItem as any).findMany({
     where: {
       status,
       ...(scope ? { scope } : {}),
@@ -44,7 +44,7 @@ export default async function NewsPage({
     include: { source: true },
     orderBy: { publishedAt: "desc" },
     take: 200
-  });
+  })) as Array<any>;
 
   return (
     <section className="flex flex-col gap-6">
@@ -70,7 +70,7 @@ export default async function NewsPage({
           publishedLabel: item.publishedAt.toDateString(),
           sourceName: item.source.name,
           tags: item.tags,
-          categories: item.categories,
+          categories: Array.isArray(item.categories) ? item.categories : [],
           country: item.country
         }))}
       />

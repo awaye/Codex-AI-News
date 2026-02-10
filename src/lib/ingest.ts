@@ -93,7 +93,7 @@ export async function ingestSource(sourceId: string) {
         continue;
       }
 
-      await prisma.newsItem.create({
+      await (prisma.newsItem as any).create({
         data: {
           title,
           summary: summary || null,

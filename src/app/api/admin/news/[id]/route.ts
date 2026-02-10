@@ -31,7 +31,7 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
   const country = typeof body.country === "string" ? normalizeText(body.country) : undefined;
   const scope = body.scope === "AFRICA" || body.scope === "GLOBAL" ? body.scope : undefined;
 
-  const updated = await prisma.newsItem.update({
+  const updated = await (prisma.newsItem as any).update({
     where: { id: params.id },
     data: {
       ...(summary !== undefined ? { summary: summary || null } : {}),
@@ -58,7 +58,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
   const country = normalizeText(formData.get("country")?.toString());
   const scope = formData.get("scope")?.toString();
 
-  await prisma.newsItem.update({
+  await (prisma.newsItem as any).update({
     where: { id: params.id },
     data: {
       summary: summary || null,

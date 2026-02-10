@@ -20,6 +20,10 @@ export default async function NewsEdit({ params }: { params: { id: string } }) {
     );
   }
 
+  const itemCategories = Array.isArray((item as any).categories)
+    ? ((item as any).categories as string[])
+    : [];
+
   return (
     <section className="rounded-3xl border border-black/10 bg-white/80 p-8 shadow-soft">
       <div className="flex flex-col gap-6">
@@ -59,7 +63,7 @@ export default async function NewsEdit({ params }: { params: { id: string } }) {
                     type="checkbox"
                     name="categories"
                     value={option.value}
-                    defaultChecked={item.categories.includes(option.value)}
+                    defaultChecked={itemCategories.includes(option.value)}
                   />
                   <span className="text-black/70">{option.label}</span>
                 </label>
