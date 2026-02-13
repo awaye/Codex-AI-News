@@ -1,3 +1,4 @@
+import { Category } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import AdminNewsFilters from "@/components/admin-news-filters";
 import AutoRefresh from "@/components/auto-refresh";
@@ -26,10 +27,10 @@ export default async function NewsPage({
     : [];
   const allowedCategories = new Set(CATEGORY_OPTIONS.map((option) => option.value));
   const categories = searchParams?.category
-    ? searchParams.category
-        .split(",")
-        .map((value) => value.trim())
-        .filter((value) => allowedCategories.has(value))
+    ? (searchParams.category
+      .split(",")
+      .map((value) => value.trim())
+      .filter((value) => allowedCategories.has(value)) as Category[])
     : [];
 
   const sources = await prisma.source.findMany({ orderBy: { name: "asc" } });
@@ -43,7 +44,7 @@ export default async function NewsPage({
     },
     include: { source: true },
     orderBy: { publishedAt: "desc" },
-    take: 200
+    take: 50
   })) as Array<any>;
 
   return (

@@ -21,8 +21,9 @@ type Props = {
   items: QueueItem[];
 };
 
-export default function NewsQueue({ items }: Props) {
+export default function NewsQueue({ items: initialItems }: Props) {
   const router = useRouter();
+  const [items, setItems] = useState<QueueItem[]>(initialItems);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [bulkStatus, setBulkStatus] = useState<"idle" | "approve" | "reject" | "pending">("idle");
 
@@ -30,6 +31,10 @@ export default function NewsQueue({ items }: Props) {
     () => items.length > 0 && selectedIds.length === items.length,
     [items.length, selectedIds.length]
   );
+
+  useEffect(() => {
+    setItems(initialItems);
+  }, [initialItems]);
 
   useEffect(() => {
     const allowed = new Set(items.map((item) => item.id));
@@ -44,6 +49,11 @@ export default function NewsQueue({ items }: Props) {
     setSelectedIds(checked ? items.map((item) => item.id) : []);
   }
 
+  function handleRemove(id: string) {
+    setItems((current) => current.filter((item) => item.id !== id));
+    // If we run low on items, maybe refresh? For now, just let user manually refresh or load more
+  }
+
   async function handleBulk(action: "APPROVE" | "REJECT") {
     if (bulkStatus === "pending" || selectedIds.length === 0) {
       return;
@@ -55,9 +65,16 @@ export default function NewsQueue({ items }: Props) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action, ids: selectedIds })
       });
-      setBulkStatus("pending");
+
+      // Optimistic update
+      setItems((current) => current.filter((item) => !selectedIds.includes(item.id)));
       setSelectedIds([]);
+      setBulkStatus("pending"); // Keep pending briefly to prevent double clicks? No, set to idle.
+
       await new Promise((resolve) => setTimeout(resolve, 280));
+      setBulkStatus("idle");
+
+      // Refresh in background to get new items
       router.refresh();
     } catch (error) {
       console.error(error);
@@ -76,18 +93,18 @@ export default function NewsQueue({ items }: Props) {
           <button
             type="button"
             onClick={() => handleBulk("APPROVE")}
-            disabled={selectedIds.length === 0 || bulkStatus === "pending"}
+            disabled={selectedIds.length === 0 || bulkStatus === "pending" || bulkStatus === "approve" || bulkStatus === "reject"}
             className="rounded-full border border-emerald-500 px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-emerald-700 transition hover:bg-emerald-50 disabled:opacity-50"
           >
-            Approve selected
+            {bulkStatus === "approve" ? "Approving..." : "Approve selected"}
           </button>
           <button
             type="button"
             onClick={() => handleBulk("REJECT")}
-            disabled={selectedIds.length === 0 || bulkStatus === "pending"}
+            disabled={selectedIds.length === 0 || bulkStatus === "pending" || bulkStatus === "approve" || bulkStatus === "reject"}
             className="rounded-full border border-red-400 px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-red-600 transition hover:bg-red-50 disabled:opacity-50"
           >
-            Reject selected
+            {bulkStatus === "reject" ? "Rejecting..." : "Reject selected"}
           </button>
         </div>
       </div>
@@ -103,6 +120,8 @@ export default function NewsQueue({ items }: Props) {
             {...item}
             selected={selectedIds.includes(item.id)}
             onSelect={(checked) => toggleSelection(item.id, checked)}
+            onRemove={handleRemove}
+            shouldRefresh={false}
           />
         ))
       )}

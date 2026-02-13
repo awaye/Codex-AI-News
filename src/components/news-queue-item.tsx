@@ -19,6 +19,8 @@ type Props = {
   country?: string | null;
   selected?: boolean;
   onSelect?: (checked: boolean) => void;
+  onRemove?: (id: string) => void;
+  shouldRefresh?: boolean;
 };
 
 export default function NewsQueueItem({
@@ -33,31 +35,30 @@ export default function NewsQueueItem({
   categories,
   country,
   selected = false,
-  onSelect
+  onSelect,
+  onRemove,
+  shouldRefresh = true
 }: Props) {
   const [animation, setAnimation] = useState<"approve" | "reject" | null>(null);
   const [collapsed, setCollapsed] = useState(false);
 
   return (
     <article
-      className={`relative overflow-hidden rounded-3xl border border-black/10 bg-white/80 p-6 shadow-soft transition-all duration-300 ease-out ${
-        collapsed ? "max-h-0 opacity-0" : "max-h-[800px] opacity-100"
-      } ${
-        animation === "approve"
+      className={`relative overflow-hidden rounded-3xl border border-black/10 bg-white/80 p-6 shadow-soft transition-all duration-300 ease-out ${collapsed ? "max-h-0 opacity-0 mb-[-24px]" : "max-h-[800px] opacity-100"
+        } ${animation === "approve"
           ? "-translate-y-2 translate-x-2"
           : animation === "reject"
             ? "translate-y-2 -translate-x-2"
             : ""
-      }`}
+        }`}
     >
       <div
-        className={`pointer-events-none absolute inset-0 rounded-3xl opacity-0 transition-opacity duration-300 ${
-          animation === "approve"
-            ? "opacity-100 bg-gradient-to-r from-emerald-200/70 to-transparent"
-            : animation === "reject"
-              ? "opacity-100 bg-gradient-to-l from-red-200/70 to-transparent"
-              : ""
-        }`}
+        className={`pointer-events-none absolute inset-0 rounded-3xl opacity-0 transition-opacity duration-300 ${animation === "approve"
+          ? "opacity-100 bg-gradient-to-r from-emerald-200/70 to-transparent"
+          : animation === "reject"
+            ? "opacity-100 bg-gradient-to-l from-red-200/70 to-transparent"
+            : ""
+          }`}
       />
       <div className="flex items-start gap-3">
         <input
@@ -97,9 +98,14 @@ export default function NewsQueueItem({
             </Link>
             <ApproveRejectButtons
               id={id}
+              shouldRefresh={shouldRefresh}
               onAction={(action) => {
                 setAnimation(action);
-                setTimeout(() => setCollapsed(true), 240);
+                setTimeout(() => {
+                  setCollapsed(true);
+                  // Wait for collapse animation to finish before removing from parent list
+                  setTimeout(() => onRemove?.(id), 300);
+                }, 240);
               }}
             />
           </div>

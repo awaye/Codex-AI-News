@@ -3,120 +3,175 @@
     "name": "TechCabal",
     "feedUrl": "https://techcabal.com/feed/",
     "scope": "AFRICA",
-    "tags": ["startups", "ecosystem"]
+    "tags": [
+      "startups",
+      "ecosystem"
+    ]
   },
   {
     "name": "Techpoint Africa",
     "feedUrl": "https://techpoint.africa/feed/",
     "scope": "AFRICA",
-    "tags": ["startups", "product"]
+    "tags": [
+      "startups",
+      "product"
+    ]
   },
   {
     "name": "Ventureburn",
     "feedUrl": "https://ventureburn.com/feed/",
     "scope": "AFRICA",
-    "tags": ["startups", "investment"]
+    "tags": [
+      "startups",
+      "investment"
+    ]
   },
   {
     "name": "Innovation Village",
     "feedUrl": "https://innovation-village.com/feed/",
     "scope": "AFRICA",
-    "tags": ["ecosystem", "policy"]
+    "tags": [
+      "ecosystem",
+      "policy"
+    ]
   },
   {
     "name": "TechTrends Africa",
     "feedUrl": "https://techtrends.africa/feed/",
     "scope": "AFRICA",
-    "tags": ["news"]
+    "tags": [
+      "news"
+    ]
   },
   {
     "name": "Techbuild Africa",
     "feedUrl": "https://techbuild.africa/feed/",
     "scope": "AFRICA",
-    "tags": ["product", "developers"]
+    "tags": [
+      "product",
+      "developers"
+    ]
   },
   {
     "name": "Disrupt Africa",
     "feedUrl": "https://old.disruptafrica.com/feed/",
     "scope": "AFRICA",
-    "tags": ["startups", "investment"]
+    "tags": [
+      "startups",
+      "investment"
+    ]
   },
   {
     "name": "South Africa Government News",
     "feedUrl": "https://www.gov.za/news-feed",
     "scope": "AFRICA",
-    "tags": ["policy", "government"]
+    "tags": [
+      "policy",
+      "government"
+    ]
   },
   {
     "name": "South Africa Government Speeches",
     "feedUrl": "https://www.gov.za/speeches-feed",
     "scope": "AFRICA",
-    "tags": ["policy", "government"]
+    "tags": [
+      "policy",
+      "government"
+    ]
   },
   {
     "name": "The Conversation Africa",
     "feedUrl": "https://theconversation.com/africa/articles.atom",
     "scope": "AFRICA",
-    "tags": ["research", "education"]
+    "tags": [
+      "research",
+      "education"
+    ]
   },
   {
     "name": "OpenAI News",
-    "feedUrl": "https://openai.com/news/rss.xml",
+    "feedUrl": "https://www.anthropic.com/research/feed.xml",
     "scope": "GLOBAL",
-    "tags": ["research", "product"]
+    "tags": [
+      "research",
+      "product"
+    ]
   },
   {
     "name": "Google AI",
     "feedUrl": "https://blog.google/innovation-and-ai/technology/ai/rss/",
     "scope": "GLOBAL",
-    "tags": ["research", "industry"]
+    "tags": [
+      "research",
+      "industry"
+    ]
   },
   {
     "name": "DeepMind",
     "feedUrl": "https://deepmind.google/blog/rss.xml",
     "scope": "GLOBAL",
-    "tags": ["research"]
+    "tags": [
+      "research"
+    ]
   },
   {
     "name": "Microsoft AI Blog",
     "feedUrl": "https://blogs.microsoft.com/ai/feed/",
     "scope": "GLOBAL",
-    "tags": ["product", "industry"]
+    "tags": [
+      "product",
+      "industry"
+    ]
   },
   {
     "name": "NVIDIA Deep Learning",
     "feedUrl": "https://blogs.nvidia.com/blog/category/deep-learning/feed/",
     "scope": "GLOBAL",
-    "tags": ["hardware", "research"]
+    "tags": [
+      "hardware",
+      "research"
+    ]
   },
   {
     "name": "MIT Technology Review (AI)",
     "feedUrl": "https://www.technologyreview.com/topic/artificial-intelligence/feed/",
     "scope": "GLOBAL",
-    "tags": ["policy", "research"]
+    "tags": [
+      "policy",
+      "research"
+    ]
   },
   {
     "name": "VentureBeat AI",
     "feedUrl": "https://venturebeat.com/category/ai/feed",
     "scope": "GLOBAL",
-    "tags": ["industry"]
+    "tags": [
+      "industry"
+    ]
   },
   {
     "name": "TechCrunch AI",
     "feedUrl": "https://techcrunch.com/tag/artificial-intelligence/feed/",
     "scope": "GLOBAL",
-    "tags": ["startups", "industry"]
+    "tags": [
+      "startups",
+      "industry"
+    ]
   },
   {
     "name": "Wall Street Journal",
     "feedUrl": "https://feeds.a.dj.com/rss/RSSWSJD.xml",
     "scope": "GLOBAL",
-    "tags": ["business"]
+    "tags": [
+      "business"
+    ]
   },
   {
     "name": "TechAbout",
     "feedUrl": "https://www.techabout.us/feed/",
     "scope": "GLOBAL",
-    "tags": ["tech"]
+    "tags": [
+      "tech"
+    ]
   }
 ]
