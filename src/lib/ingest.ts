@@ -64,6 +64,12 @@ export async function ingestSource(sourceId: string) {
       const summaryRaw = normalizeText(stripHtml(item.contentSnippet ?? item.content ?? ""));
       const summary = summaryRaw ? truncateText(summaryRaw, 320) : "";
       const publishedAt = safeDate(item.isoDate ?? item.pubDate ?? feed.updated);
+
+      // Enforce 2026 cutoff
+      if (publishedAt < new Date("2026-01-01")) {
+        continue;
+      }
+
       const categories = Array.isArray(item.categories) ? item.categories : [];
       const tags = mergeTags(source.tags ?? [], categories);
       const aiText = buildAiText([title, summary, categories.join(" ")]);

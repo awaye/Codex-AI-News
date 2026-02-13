@@ -69,8 +69,8 @@ export default function IngestControls({
     <div className="flex items-center gap-6 rounded-2xl border border-black/10 bg-white/80 px-5 py-4 text-sm shadow-soft">
       <div className="flex flex-col">
         <span className="text-xs uppercase tracking-[0.2em] text-black/50">Feed fetch</span>
-        <span className="text-sm text-black/70">
-          {lastRun ? `Last run ${lastRun.toLocaleTimeString()}` : "No runs yet"}
+        <span className="text-sm text-black/70" suppressHydrationWarning>
+          {loading ? "Fetching..." : lastRun ? `Last run ${lastRun.toLocaleTimeString()}` : "No runs yet"}
         </span>
         <span className="text-xs text-black/50">{nextLabel}</span>
       </div>
